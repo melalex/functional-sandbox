@@ -1,13 +1,10 @@
-package com.melalex.part1
+package com.melalex
 
 fun fibonacci(n: Int): Long {
 
     tailrec fun findNext(beforePrevious: Long, previous: Long, count: Int): Long {
-        if (count == n) {
-            return previous
-        }
-
-        return findNext(previous, beforePrevious + previous, count + 1)
+        return if (count == n) previous
+        else findNext(previous, beforePrevious + previous, count + 1)
     }
 
     return when {
@@ -16,4 +13,8 @@ fun fibonacci(n: Int): Long {
         n == 2 -> 1
         else -> findNext(0, 1, 2)
     }
+}
+
+fun <T> Array<T>.isSorted(comparator: Comparator<T>) = (0..size - 2).all {
+    comparator.compare(this[it], this[it + 1]) <= 0
 }
