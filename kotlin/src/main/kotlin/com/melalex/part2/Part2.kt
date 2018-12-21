@@ -1,4 +1,4 @@
-package com.melalex
+package com.melalex.part2
 
 fun fibonacci(n: Int): Long {
 
@@ -18,3 +18,9 @@ fun fibonacci(n: Int): Long {
 fun <T> Array<T>.isSorted(comparator: Comparator<T>) = (0..size - 2).all {
     comparator.compare(this[it], this[it + 1]) <= 0
 }
+
+fun <A, B, C> curry(target: (A, B) -> C) = { a: A -> { b: B -> target(a, b) } }
+
+fun <A, B, C> uncurry(target: (A) -> (B) -> C) = { a: A, b: B -> target(a)(b) }
+
+fun <A, B, C> compose(f: (B) -> C, g: (A) -> B): (A) -> C = { f(g(it)) }

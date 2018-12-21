@@ -1,9 +1,9 @@
-package com.melalex
+package com.melalex.part2
 
-import com.melalex.Part1.ExtendedSeq
+import com.melalex.part2.Part2.ExtendedSeq
 import org.scalatest.FlatSpec
 
-class Part1Spec extends FlatSpec {
+class Part2Spec extends FlatSpec {
 
   val expectedResults: Map[Int, Long] = Map(
     1 -> 0L,
@@ -16,13 +16,13 @@ class Part1Spec extends FlatSpec {
 
   "The fibonacci" should "return correct Fibonacci number" in {
     expectedResults.foreach { case (k, v) =>
-      assert(Part1.fibonacci(k) == v, s"Invalid fibonacci($k) result")
+      assert(Part2.fibonacci(k) == v, s"Invalid fibonacci($k) result")
     }
   }
 
   it should "throw IllegalArgumentException when argument negative" in {
     assertThrows[IllegalArgumentException] {
-      Part1.fibonacci(-1)
+      Part2.fibonacci(-1)
     }
   }
 

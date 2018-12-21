@@ -1,9 +1,9 @@
-package com.melalex
+package com.melalex.part2
 
 import org.junit.Assert.*
 import org.junit.Test
 
-class Part1Test {
+class Part2Test {
 
     private val expectedResults: Map<Int, Long> = mapOf(
             1 to 0L,

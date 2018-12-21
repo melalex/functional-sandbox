@@ -1,10 +1,10 @@
-package com.melalex
+package com.melalex.part2
 
 import java.util.Comparator
 
 import scala.annotation.tailrec
 
-object Part1 {
+object Part2 {
 
   def fibonacci(n: Int): Long = {
 
@@ -21,6 +21,12 @@ object Part1 {
     }
   }
 
+  def curry[A, B, C](target: (A, B) => C): A => B => C = a => b => target(a, b)
+
+  def uncurry[A, B, C](target: A => B => C): (A, B) => C = (a, b) => target(a)(b)
+
+  def compose[A, B, C](f: B => C, g: A => B): A => C = a => f(g(a))
+
   implicit class ExtendedSeq[A](seq: Seq[A]) {
 
     def isSorted(comparator: Comparator[A]): Boolean = {
@@ -34,4 +40,5 @@ object Part1 {
       compareNeighbors(1, previousResult = true)
     }
   }
+
 }
