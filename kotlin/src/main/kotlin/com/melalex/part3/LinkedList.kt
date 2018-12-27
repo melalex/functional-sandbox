@@ -4,7 +4,7 @@ abstract class LinkedList<T> : Iterable<T> {
 
     abstract fun append(element: T): NonEmptyLinkedList<T>
 
-    abstract fun <R> reduce(identity: R, accumulator: (result: R, element: T) -> R): R
+    abstract fun <R> reduce(identity: R, accumulator: (R, T) -> R): R
 
     companion object {
 
@@ -41,7 +41,7 @@ class NonEmptyLinkedList<T>(val head: T, val tail: LinkedList<T>) : LinkedList<T
 
     override fun append(element: T): NonEmptyLinkedList<T> = NonEmptyLinkedList(element, this)
 
-    override fun <R> reduce(identity: R, accumulator: (result: R, element: T) -> R): R {
+    override fun <R> reduce(identity: R, accumulator: (R, T) -> R): R {
         tailrec fun reduceInternal(list: LinkedList<T>, result: R): R =
                 if (list is NonEmptyLinkedList<T>) reduceInternal(list.tail, accumulator.invoke(result, head))
                 else result
