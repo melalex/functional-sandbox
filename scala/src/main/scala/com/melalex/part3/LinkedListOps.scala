@@ -13,6 +13,8 @@ object LinkedListOps {
     case NonEmptyLinkedList(head, tail) => append(tail, NonEmptyLinkedList(head, other))
   }
 
+  def length[E](target: LinkedList[E]): Int = foldLeft(target, 0)((r, _) => r + 1)
+
   def foldRight[E, R](target: LinkedList[E], seed: R)(accumulator: (R, E) => R): R = target match {
     case EmptyLinkedList => seed
     case NonEmptyLinkedList(head, tail) => accumulator.apply(foldRight(tail, seed)(accumulator), head)
@@ -58,27 +60,56 @@ object LinkedListOps {
     dropRightInternal(toDrop, target)
   }
 
+  def reverse[E](target: LinkedList[E]): LinkedList[E] = target match {
+    case EmptyLinkedList => EmptyLinkedList
+    case NonEmptyLinkedList(head, tail) => reverse(tail).append(head)
+  }
+
+  @tailrec
+  def flatten[E](source: LinkedList[Any], target: LinkedList[E] = EmptyLinkedList)(mapper: Any => E): LinkedList[E] = source match {
+    case EmptyLinkedList => target
+    case NonEmptyLinkedList(head, tail) =>
+      head match {
+        case left: LinkedList[Any] => flatten(left, target)(mapper)
+        case _ => flatten(tail, NonEmptyLinkedList(mapper.apply(head), target))(mapper)
+      }
+  }
+
   implicit def wrapLinkedList[E](linkedList: LinkedList[E]): LinkedListExt[E] = LinkedListExt(linkedList)
 
   implicit def unwrapLinkedList[E](linkedListExt: LinkedListExt[E]): LinkedListExt[E] = linkedListExt.linkedList
 
   case class LinkedListExt[+E](linkedList: LinkedList[E]) {
 
+    @inline
     def append[R >: E](node: R): NonEmptyLinkedList[R] = LinkedListOps.append(linkedList, node)
 
+    @inline
     def append[R >: E](other: LinkedList[R]): LinkedList[R] = LinkedListOps.append(linkedList, other)
 
+    @inline
+    def length(): Int = LinkedListOps.length(linkedList)
+
+    @inline
     def foldRight[R](seed: R, accumulator: (R, E) => R): R = LinkedListOps.foldRight(linkedList, seed)(accumulator)
 
+    @inline
     def foldLeft[R](seed: R, accumulator: (R, E) => R): R = LinkedListOps.foldLeft(linkedList, seed)(accumulator)
 
+    @inline
     def setHead[R >: E](node: R): NonEmptyLinkedList[R] = LinkedListOps.setHead(linkedList, node)
 
+    @inline
     def drop(n: Int): LinkedList[E] = LinkedListOps.drop(linkedList, n)
 
+    @inline
     def dropWhile(predicate: E => Boolean): LinkedList[E] = LinkedListOps.dropWhile(linkedList)(predicate)
 
+    @inline
     def dropRight(n: Int): LinkedList[E] = LinkedListOps.dropRight(linkedList, n)
+
+    @inline
+    def reverse(): LinkedList[E] = LinkedListOps.reverse(linkedList)
   }
 
 }
