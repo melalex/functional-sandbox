@@ -15,10 +15,8 @@ object LinkedListOps {
 
   def length[E](target: LinkedList[E]): Int = foldLeft(target, 0)((r, _) => r + 1)
 
-  def foldRight[E, R](target: LinkedList[E], seed: R)(accumulator: (R, E) => R): R = target match {
-    case EmptyLinkedList => seed
-    case NonEmptyLinkedList(head, tail) => accumulator.apply(foldRight(tail, seed)(accumulator), head)
-  }
+  def foldRight[E, R](target: LinkedList[E], seed: R)(accumulator: (R, E) => R): R =
+    foldLeft(target, (r: R) => r)((result, node) => r => result(accumulator(r, node)))(seed)
 
   @tailrec
   def foldLeft[E, R](target: LinkedList[E], seed: R)(accumulator: (R, E) => R): R = target match {
@@ -60,24 +58,17 @@ object LinkedListOps {
     dropRightInternal(toDrop, target)
   }
 
-  def reverse[E](target: LinkedList[E]): LinkedList[E] = target match {
-    case EmptyLinkedList => EmptyLinkedList
-    case NonEmptyLinkedList(head, tail) => reverse(tail).append(head)
-  }
+  def reverse[E](target: LinkedList[E]): LinkedList[E] =
+    foldRight(target, EmptyLinkedList.asInstanceOf[LinkedList[E]])(_ append _)
 
-  @tailrec
-  def flatten[E](source: LinkedList[Any], target: LinkedList[E] = EmptyLinkedList)(mapper: Any => E): LinkedList[E] = source match {
-    case EmptyLinkedList => target
-    case NonEmptyLinkedList(head, tail) =>
-      head match {
-        case left: LinkedList[Any] => flatten(left, target)(mapper)
-        case _ => flatten(tail, NonEmptyLinkedList(mapper.apply(head), target))(mapper)
-      }
-  }
+  def flatten[E](source: LinkedList[Any], target: LinkedList[E] = EmptyLinkedList): LinkedList[E] =
+    foldRight[Any, LinkedList[E]](source, target)((result: LinkedList[E], node: Any) => node match {
+      case NonEmptyLinkedList => flatten(node.asInstanceOf, result)
+      case EmptyLinkedList => target
+      case _ => append(target, node.asInstanceOf[E])
+    })
 
   implicit def wrapLinkedList[E](linkedList: LinkedList[E]): LinkedListExt[E] = LinkedListExt(linkedList)
-
-  implicit def unwrapLinkedList[E](linkedListExt: LinkedListExt[E]): LinkedListExt[E] = linkedListExt.linkedList
 
   case class LinkedListExt[+E](linkedList: LinkedList[E]) {
 

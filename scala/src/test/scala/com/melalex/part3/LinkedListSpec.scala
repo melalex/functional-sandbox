@@ -61,5 +61,5 @@ class LinkedListSpec extends FlatSpec {
     assert(actual == expected)
   }
 
-  private def of[E](first: E, tail: LinkedList[E] = EmptyLinkedList) = new NonEmptyLinkedList[E](first, tail)
+  private def of[E](first: E, tail: LinkedList[E] = EmptyLinkedList) = NonEmptyLinkedList[E](first, tail)
 }

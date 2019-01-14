@@ -12,7 +12,7 @@ class LinkedListOpsSpec extends FlatSpec {
       LinkedList(4),
     )
 
-    val actual = flatten(target)(i => i.asInstanceOf[Int])
+    val actual = flatten(target)
 
     val expected = LinkedList(0, 1, 2, 3, 4)
 
