@@ -93,6 +93,16 @@ class LinkedListSpec extends FlatSpec with MockFactory {
     assert(actual == expected)
   }
 
+  it should "zip with" in {
+    val target1 = LinkedList(0, 1, 2, 3, 4)
+    val target2 = LinkedList(0, 1, 2, 3, 4)
+    val expected = LinkedList(0, 2, 4, 6, 8)
+
+    val actual = target1.zipWith(target2)(_ + _)
+
+    assert(actual == expected)
+  }
+
   it should "filter" in {
     val target = LinkedList(0, 1, 2, 3, 4)
     val expected = LinkedList(0, 2, 4)
