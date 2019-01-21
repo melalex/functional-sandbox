@@ -68,6 +68,34 @@ object LinkedListOps {
       case _: E => append(result, node.asInstanceOf[E])
     })
 
+  def handle[E](target: LinkedList[E])(handler: NonEmptyLinkedList[E] => Unit): Unit = target match {
+    case list: NonEmptyLinkedList[E] => handler.apply(list)
+    case _ =>
+  }
+
+  @tailrec
+  def forEach[E](target: LinkedList[E])(consumer: E => Unit): Unit = target match {
+    case list: NonEmptyLinkedList[E] =>
+      consumer.apply(list.head)
+      forEach(list.tail)(consumer)
+    case _ =>
+  }
+
+  def map[E, T](target: LinkedList[E])(mapper: E => T): LinkedList[T] =
+    foldRight(target, EmptyLinkedList.asInstanceOf[LinkedList[T]])(
+      (result, node) => append(result, mapper.apply(node))
+    )
+
+  def flatMap[E, T](target: LinkedList[E])(mapper: E => LinkedList[T]): LinkedList[T] =
+    foldRight(target, EmptyLinkedList.asInstanceOf[LinkedList[T]])(
+      (result, node) => append(mapper.apply(node), result)
+    )
+
+  def filter[E](target: LinkedList[E])(predicate: E => Boolean): LinkedList[E] =
+    foldRight(target, EmptyLinkedList.asInstanceOf[LinkedList[E]])(
+      (result, node) => if (predicate.apply(node)) append(result, node) else result
+    )
+
   implicit def wrapLinkedList[E](linkedList: LinkedList[E]): LinkedListExt[E] = LinkedListExt(linkedList)
 
   case class LinkedListExt[+E](linkedList: LinkedList[E]) {
@@ -101,6 +129,18 @@ object LinkedListOps {
 
     @inline
     def reverse(): LinkedList[E] = LinkedListOps.reverse(linkedList)
+
+    @inline
+    def forEach(consumer: E => Unit): Unit = LinkedListOps.forEach(linkedList)(consumer)
+
+    @inline
+    def map[T](mapper: E => T): LinkedList[T] = LinkedListOps.map(linkedList)(mapper)
+
+    @inline
+    def flatMap[T](mapper: E => LinkedList[T]): LinkedList[T] = LinkedListOps.flatMap(linkedList)(mapper)
+
+    @inline
+    def filter(predicate: E => Boolean): LinkedList[E] = LinkedListOps.filter(linkedList)(predicate)
   }
 
 }
