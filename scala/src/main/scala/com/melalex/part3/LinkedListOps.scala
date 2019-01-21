@@ -63,9 +63,9 @@ object LinkedListOps {
 
   def flatten[E](source: LinkedList[Any], target: LinkedList[E] = EmptyLinkedList): LinkedList[E] =
     foldRight[Any, LinkedList[E]](source, target)((result: LinkedList[E], node: Any) => node match {
-      case NonEmptyLinkedList => flatten(node.asInstanceOf, result)
-      case EmptyLinkedList => target
-      case _ => append(target, node.asInstanceOf[E])
+      case list: NonEmptyLinkedList[E] => flatten(list, result)
+      case EmptyLinkedList => result
+      case _: E => append(result, node.asInstanceOf[E])
     })
 
   implicit def wrapLinkedList[E](linkedList: LinkedList[E]): LinkedListExt[E] = LinkedListExt(linkedList)
