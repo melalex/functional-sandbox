@@ -96,11 +96,6 @@ object LinkedListOps {
       (result, node) => if (predicate(node)) append(result, node) else result
     )
 
-  def loop[A, B](as: List[A], bs: List[B], acc: List[(A, B)]): List[(A, B)] = (as, bs) match {
-    case (x :: xs, y :: ys) => loop(xs, ys, (x, y) :: acc)
-    case _ => acc
-  }
-
   def zip[E, T](first: LinkedList[E], second: LinkedList[E])(zipper: (E, E) => T): LinkedList[T] = {
 
     @tailrec
