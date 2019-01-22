@@ -65,7 +65,7 @@ object LinkedListOps {
     foldRight[Any, LinkedList[E]](source, target)((result: LinkedList[E], node: Any) => node match {
       case list: NonEmptyLinkedList[E] => flatten(list, result)
       case EmptyLinkedList => result
-      case _: E => append(result, node.asInstanceOf[E])
+      case value: E => append(result, value)
     })
 
   def ifPresent[E](target: LinkedList[E])(handler: NonEmptyLinkedList[E] => Unit): Unit = target match {
@@ -96,18 +96,22 @@ object LinkedListOps {
       (result, node) => if (predicate(node)) append(result, node) else result
     )
 
+  def loop[A, B](as: List[A], bs: List[B], acc: List[(A, B)]): List[(A, B)] = (as, bs) match {
+    case (x :: xs, y :: ys) => loop(xs, ys, (x, y) :: acc)
+    case _ => acc
+  }
+
   def zip[E, T](first: LinkedList[E], second: LinkedList[E])(zipper: (E, E) => T): LinkedList[T] = {
 
     @tailrec
-    def zipInternal(first: LinkedList[E], second: LinkedList[E], listSupplier: LinkedList[T] => LinkedList[T]): LinkedList[T] => LinkedList[T] = {
-      if (first != EmptyLinkedList && second != EmptyLinkedList) {
-        val firstHead = first.asInstanceOf[NonEmptyLinkedList[E]].head
-        val secondHead = second.asInstanceOf[NonEmptyLinkedList[E]].head
-        zipInternal(first.tail, second.tail, l => listSupplier(l.append(zipper(firstHead, secondHead))))
-      } else listSupplier
-    }
+    def loop(first: LinkedList[E], second: LinkedList[E], listSupplier: LinkedList[T] => LinkedList[T]): LinkedList[T] => LinkedList[T] =
+      (first, second) match {
+        case (NonEmptyLinkedList(firstHead, firstTail), NonEmptyLinkedList(secondHead, secondTail)) =>
+          loop(firstTail, secondTail, l => listSupplier(l.append(zipper(firstHead, secondHead))))
+        case _ => listSupplier
+      }
 
-    zipInternal(first, second, (l: LinkedList[T]) => l)(EmptyLinkedList)
+    loop(first, second, (l: LinkedList[T]) => l)(EmptyLinkedList)
   }
 
   implicit def wrapLinkedList[E](linkedList: LinkedList[E]): LinkedListExt[E] = LinkedListExt(linkedList)

@@ -6,6 +6,11 @@ object LinkedList {
     case Nil => EmptyLinkedList
     case head +: tail => NonEmptyLinkedList[E](head, apply(tail: _*))
   }
+
+  def unapply[E](arg: LinkedList[E]): Option[(E, LinkedList[E])] = arg match {
+    case list: NonEmptyLinkedList[E] => Some((list.head, list.tail))
+    case _ => None
+  }
 }
 
 sealed trait LinkedList[+E] {
