@@ -20,6 +20,8 @@ fun <A> Tree<A>.max(comparator: Comparator<A>): A = fold({ it }) { left, right -
     if (comparator.compare(left, right) > 0) left else right
 }
 
-fun <A, B> Tree<A>.map(transformer: (A) -> B): Tree<B> = fold({ leaf(transformer(it)) }) { left, right -> Branch(left, right) }
+fun <A, B> Tree<A>.map(transformer: (A) -> B): Tree<B> = fold({ tree(transformer(it)) }) { left, right -> Branch(left, right) }
 
-private fun <A> leaf(value: A): Tree<A> = Leaf(value)
+fun <A> tree(left: Tree<A>, right: Tree<A>): Tree<A> = Branch(left, right)
+
+fun <A> tree(value: A): Tree<A> = Leaf(value)
