@@ -7,7 +7,7 @@ object Tree {
   def apply[E](value: E): Tree[E] = Leaf(value)
 }
 
-sealed trait Tree[-T]
+sealed trait Tree[T]
 
 case class Leaf[T](value: T) extends Tree[T]
 

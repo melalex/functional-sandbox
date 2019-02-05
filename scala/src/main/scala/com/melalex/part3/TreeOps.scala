@@ -23,8 +23,8 @@ object TreeOps {
 
   def size[E](tree: Tree[E]): Int = fold(tree, 0)((acc, _) => acc + 1)
 
-  def max[E](tree: Tree[E], min: E)(comparator: (E, E) => Int): E = fold(tree, min)((max, tree) =>
-    tree match {
+  def max[E](tree: Tree[E], min: E)(comparator: (E, E) => Int): E = fold(tree, min)((max, subTree) =>
+    subTree match {
       case Leaf(value) if comparator(value, max) > 0 => value
       case _ => max
     })
@@ -32,7 +32,7 @@ object TreeOps {
   def depth[E](tree: Tree[E]): Int = fold(tree)(_ => 1)((left, right) => (if (left > right) left else right) + 1)
 
   def map[E, R](tree: Tree[E])(transform: E => R): Tree[R] =
-    fold(tree)(value => Leaf(transform(value)).asInstanceOf[Tree[R]])(Branch(_, _))
+    fold(tree)(value => Leaf(transform(value)) : Tree[R])(Branch(_, _))
 
   implicit def wrapLinkedList[E](tree: Tree[E]): ExtendedTree[E] = ExtendedTree(tree)
 

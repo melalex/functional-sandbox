@@ -50,7 +50,7 @@ object LinkedListOps {
         case EmptyLinkedList => EmptyLinkedList
         case NonEmptyLinkedList(_, nextSlice) =>
           val castedNode = nodeToAdd.asInstanceOf[NonEmptyLinkedList[E]]
-          dropRightInternal(nextSlice, castedNode.tail.asInstanceOf[NonEmptyLinkedList[E]]).append(castedNode.head)
+          dropRightInternal(nextSlice, castedNode.tail).append(castedNode.head)
       }
 
     val toDrop = drop(target, n)
@@ -59,7 +59,7 @@ object LinkedListOps {
   }
 
   def reverse[E](target: LinkedList[E]): LinkedList[E] =
-    foldRight(target, EmptyLinkedList.asInstanceOf[LinkedList[E]])(_ append _)
+    foldRight(target, EmptyLinkedList: LinkedList[E])(_ append _)
 
   def flatten[E](source: LinkedList[Any], target: LinkedList[E] = EmptyLinkedList): LinkedList[E] =
     foldRight[Any, LinkedList[E]](source, target)((result: LinkedList[E], node: Any) => node match {
