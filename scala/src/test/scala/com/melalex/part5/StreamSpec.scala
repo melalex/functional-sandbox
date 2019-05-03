@@ -98,4 +98,34 @@ class StreamSpec extends FlatSpec {
 
     assert(actual == expected)
   }
+
+  it should "unfold" in {
+    def someTuple(i: Int): Option[(Int, Int)] = Some((i, i))
+
+    val expected = 1 :: 2 :: 3 :: 4 :: 5 :: Nil
+
+    val actual = Stream.unfold[Int, Int](0)(s => someTuple(s + 1)).take(5).toList
+
+    assert(actual == expected)
+  }
+
+  "Stream.forAll" should "return true" in {
+    def someTuple(i: Int): Option[(Int, Int)] = Some((i, i))
+
+    val expected = 1 :: 2 :: 3 :: 4 :: 5 :: Nil
+
+    val actual = Stream.unfold[Int, Int](0)(s => someTuple(s + 1)).take(5).toList
+
+    assert(actual == expected)
+  }
+
+  it should "return true" in {
+    def someTuple(i: Int): Option[(Int, Int)] = Some((i, i))
+
+    val expected = 1 :: 2 :: 3 :: 4 :: 5 :: Nil
+
+    val actual = Stream.unfold[Int, Int](0)(s => someTuple(s + 1)).take(5).toList
+
+    assert(actual == expected)
+  }
 }

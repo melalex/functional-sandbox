@@ -46,3 +46,7 @@ fun <A> Stream<A>.takeWhile(predicate: (A) -> Boolean): Stream<A> = when {
     this is Cons<A> && predicate(head()) -> Cons(head, { takeWhile(predicate) })
     else -> Empty as Stream<A>
 }
+
+@Suppress("UNCHECKED_CAST")
+fun <A, B> unfold(seed: B, supplier: (B) -> Pair<A, B>?): Stream<A> =
+        supplier(seed)?.let { Cons({ it.first }, { unfold(it.second, supplier) }) } ?: Empty as Stream<A>
