@@ -1,6 +1,5 @@
 package com.melalex.part6
 
-import java._
 import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.{Callable, CountDownLatch, ExecutorService}
 
