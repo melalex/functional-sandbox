@@ -36,6 +36,14 @@ object Par {
     p2(es)(b => combiner ! Right(b))
   }
 
+  def flatMap[A, B](p: Par[A])(f: A => Par[B]): Par[B] =
+    es => (cb: B => Unit) => p(es)(a => f(a)(es)(cb))
+
+  def join[A](p: Par[Par[A]]): Par[A] =
+    es => (cb: A => Unit) => eval(es) {
+      p(es)(a => a(es)(cb))
+    }
+
   def unit[A](a: A): Par[A] =
     es => (cb: A => Unit) => cb(a)
 
